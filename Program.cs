@@ -14,7 +14,7 @@ using System.Net;
 var stringData="";
 // Init default credential
 var credential = new Azure.Identity.DefaultAzureCredential();
-//Address for APIM
+//Address for web destination you'll call (no auth for now)
 var baseAddress = "https://testtokencqm002.azurewebsites.net/";
 var api = "api/Todo";
 var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -29,7 +29,9 @@ DateTime T = System.DateTime.UtcNow;
 
 try
 {
-    token = credential.GetToken(new Azure.Core.TokenRequestContext(scopes:["api://644e0700-85ae-4de0-83dd-a876d692e693/.default"],claims: "roles"));
+    // replace this with Application ID URI + /.default
+    string apiAppRegistration= "api://644e0700-85ae-4de0-83dd-a876d692e693/.default";
+    token = credential.GetToken(new Azure.Core.TokenRequestContext(scopes:[apiAppRegistration],claims: "roles"));
     stringData=stringData + "roles:"+ "\r\nToken:" +token.Token.ToString()+"\r\n";
 }
 catch (System.Exception e)
@@ -45,7 +47,7 @@ try
     var response = await client.GetAsync(baseAddress + api);
     if (response.IsSuccessStatusCode)
         {
-        stringData = stringData+ "Response from APIM:"+ await response.Content.ReadAsStringAsync();
+        stringData = stringData+ "Response from API:"+ await response.Content.ReadAsStringAsync();
         Console.WriteLine(stringData);
         }
         else{
