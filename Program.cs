@@ -30,7 +30,8 @@ DateTime T = System.DateTime.UtcNow;
 try
 {
     // replace this with Application ID URI + /.default
-    string apiAppRegistration= "api://644e0700-85ae-4de0-83dd-a876d692e693/.default";
+    String appid = Environment.GetEnvironmentVariable("envAppRegistrationId");
+    string apiAppRegistration= "api://"+appid+"/.default";
     token = credential.GetToken(new Azure.Core.TokenRequestContext(scopes:[apiAppRegistration],claims: "roles"));
     stringData=stringData + "roles:"+ "\r\nToken:" +token.Token.ToString()+"\r\n";
 }
@@ -66,7 +67,7 @@ catch (System.Exception e)
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/", () => stringData+System.DateTime.UtcNow.ToString());
+app.MapGet("/", () => System.DateTime.UtcNow.ToString());
 
 app.Run();
 public record Record(
